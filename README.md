@@ -440,7 +440,7 @@ Given that many different controllers will need to
 [authenticate](https://en.wikipedia.org/wiki/Authentication) and
 [authorize](https://en.wikipedia.org/wiki/Authorization)
 users––[`AuthController`][auth_controller],
-[`UsersController`][users_controller], etc &mdash; it makes sense to lift the
+[`UsersController`][users_controller], etc — it makes sense to lift the
 functionality of encoding/decoding tokens to our top level
 [`ApplicationController`][application_controller]. Recall that **all**
 controllers inherit from [`ApplicationController`][application_controller]!
