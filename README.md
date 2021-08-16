@@ -811,9 +811,9 @@ If `@user` is `nil`, which is false-y, **ruby will not even attempt to call
 
 Again, the client should be sending a JWT along with every authenticated
 request. Refer to this diagram from
-[scotch.io](https://scotch.io/tutorials/the-ins-and-outs-of-token-based-authentication):
+[Vaadata](https://www.vaadata.com/blog/jwt-tokens-and-security-working-principles-and-use-cases/):
 
-![scotch.io article on token auth](https://cdn.scotch.io/scotchy-uploads/2014/11/tokens-new.png)
+![Vaadata article on token auth](https://www.vaadata.com/blog/wp-content/uploads/2016/12/JWT_tokens_EN.png)
 
 A sample request might look like:
 
