@@ -34,17 +34,17 @@ With that out of the way, here begins our journey:
 This section will walk through building a rails server. Let's create our app
 with:
 
-```sh
-rails new backend_project_name --api --database=postgresql
+```console
+$ rails new backend_project_name --api
 ```
 
 We're going to need a few gems in our [Gemfile][gemfile] so let's go ahead and
 add them:
 
 ```sh
-bundle add jwt
-bundle add active_model_serializers
-bundle add faker
+$ bundle add jwt
+$ bundle add active_model_serializers
+$ bundle add faker
 ```
 
 If you get a gem not found error, try manually adding them to your
@@ -59,33 +59,29 @@ Call `bundle install`. Your [Gemfile][gemfile] should look something like this:
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.1'
+ruby '2.7.4'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.1'
-# Use postgresql as the database for Active Record
-gem 'pg', '>= 0.18', '< 2.0'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails', '~> 6.1.4'
+# Use sqlite3 as the database for Active Record
+gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
+# gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
-# Use ActiveModel has_secure_password
-gem 'bcrypt', '~> 3.1.7'
+# Use Active Model has_secure_password
+# gem 'bcrypt', '~> 3.1.7'
 
-# Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+# Use Active Storage variant
+# gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.1.0', require: false
+gem 'bootsnap', '>= 1.4.4', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-gem 'rack-cors'
-
+# gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -93,21 +89,19 @@ group :development, :test do
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem "jwt", "~> 2.1"
+gem "jwt", "~> 2.2"
 
-gem "active_model_serializers", "~> 0.10.7"
+gem "active_model_serializers", "~> 0.10.12"
 
-gem "faker", "~> 1.9"
+gem "faker", "~> 2.19"
 ```
 
 Don't forget to enable
@@ -143,12 +137,13 @@ internet. _Please_**
 
 Run the following commands to set up the `User` model:
 
-- `rails g model User username password_digest bio avatar`
-- `rails g controller api/v1/users`
-- `rails g serializer user` (if you want to
-  [use a serializer](https://www.sitepoint.com/active-model-serializers-rails-and-json-oh-my/))
-- `rails db:create`
-- `rails db:migrate`
+```console
+$ rails g model User username password_digest bio avatar
+$ rails g controller api/v1/users
+$ rails g serializer user
+$ rails db:create
+$ rails db:migrate
+```
 
 Add `has_secure_password` to [`app/models/user.rb`][user_model]. Recall that
 `has_secure_password` comes from
@@ -191,8 +186,8 @@ Let's take a look at some of the functionality provided by `BCrypt`:
 
 ```ruby
 # in rails console
-> BCrypt::Password.create('P@ssw0rd')
- => "$2a$10$D0iXNNy/5r2YC5GC4ArGB.dNL6IpUzxH3WjCewb3FM8ciwsHBt0cq"
+BCrypt::Password.create('P@ssw0rd')
+# => "$2a$10$D0iXNNy/5r2YC5GC4ArGB.dNL6IpUzxH3WjCewb3FM8ciwsHBt0cq"
 ```
 
 `BCrypt::Password`
@@ -204,14 +199,14 @@ salt_ and compare it against an already digested password:
 
 ```ruby
 # in rails console
-> salted_pw = BCrypt::Password.create('P@ssw0rd')
-  => "$2a$10$YQvJPemUzm8IdCCaHxiOOes6HMEHda/.Hl60cUoYb4X4fncgT8ubG"
+salted_pw = BCrypt::Password.create('P@ssw0rd')
+# => "$2a$10$YQvJPemUzm8IdCCaHxiOOes6HMEHda/.Hl60cUoYb4X4fncgT8ubG"
 
-> salted_pw.class
-  => BCrypt::Password
+salted_pw.class
+# => BCrypt::Password
 
-> salted_pw == 'P@ssw0rd'
-  => true
+salted_pw == 'P@ssw0rd'
+# => true
 ```
 
 `BCrypt` also provides a method that will take a stringified `password_digest`
@@ -379,7 +374,7 @@ encoded token client-side.
 
 #### JWT Auth Flow
 
-![](https://i.stack.imgur.com/f2ZhM.png)
+![jwt](https://i.stack.imgur.com/f2ZhM.png)
 
 Here is the JWT authentication flow for logging in:
 
@@ -866,11 +861,12 @@ will never call [`UsersController#profile`][users_controller] and will instead:
 render json: { message: 'Please log in' }, status: :unauthorized
 ```
 
-That's it! You should now have a server set up to create a token when a user logs in
-or signs up, and authenticate the user using that token for future requests.
+That's it! You should now have a server set up to create a token when a user
+logs in or signs up, and authenticate the user using that token for future
+requests.
 
-The frontend implementation is up to you. Remember, the key to using JWT for authentication
-is to:
+The frontend implementation is up to you. Remember, the key to using JWT for
+authentication is to:
 
 - Store the token in the browser when the user logs in (such as localStorage)
 - Send the token along with every request the user makes using an
