@@ -41,7 +41,7 @@ $ rails new backend_project_name --api
 We're going to need a few gems in our [Gemfile][gemfile] so let's go ahead and
 add them:
 
-```sh
+```console
 $ bundle add jwt
 $ bundle add active_model_serializers
 $ bundle add faker
