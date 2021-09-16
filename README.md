@@ -39,7 +39,7 @@ $ rails new backend_project_name --api
 ```
 
 We're going to need a few gems in our [Gemfile][gemfile] so let's go ahead and
-add them:
+add them. `cd` into your project directory and run:
 
 ```console
 $ bundle add jwt
@@ -116,6 +116,7 @@ meant to be public, we can make those available but limit to `GET` requests, for
 example.
 
 ```ruby
+# config/initializers/cors.rb
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins '*'
@@ -141,7 +142,6 @@ Run the following commands to set up the `User` model:
 $ rails g model User username password_digest bio avatar
 $ rails g controller api/v1/users
 $ rails g serializer user
-$ rails db:create
 $ rails db:migrate
 ```
 
@@ -355,7 +355,8 @@ fetch("http://localhost:3000/api/v1/users", {
   .then(console.log);
 ```
 
-**Note:** if you're using Postman and your formatting is set to "raw and JSON", remember to use double quotes ("") in both keys and values in the request.
+**Note:** if you're using Postman and your formatting is set to "raw and JSON",
+remember to use double quotes ("") in both keys and values in the request.
 
 Important! **Make Sure You Can POST and Create a New User Before Proceeding**.
 
@@ -505,6 +506,7 @@ class ApplicationController < ActionController::API
       end
     end
   end
+end
 ```
 
 A few things to note about the code above:
